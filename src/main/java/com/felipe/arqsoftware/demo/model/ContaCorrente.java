@@ -1,5 +1,6 @@
 package com.felipe.arqsoftware.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,8 @@ public class ContaCorrente {
     private Long id;
     private int agencia;
     private int numeroConta;
-    private String cliente;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Cliente cliente;
     private Double saldo;
     @OneToMany(mappedBy = "contaCorrente")
     private List<Extrato> extratos;
@@ -26,7 +28,7 @@ public class ContaCorrente {
         this.numeroConta = numeroConta;
     }
 
-    public ContaCorrente(Long id, int agencia, int numeroConta, String cliente, Double saldo) {
+    public ContaCorrente(Long id, int agencia, int numeroConta, Cliente cliente, Double saldo) {
         this.id = id;
         this.agencia = agencia;
         this.numeroConta = numeroConta;

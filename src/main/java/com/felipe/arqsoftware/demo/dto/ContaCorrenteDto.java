@@ -1,5 +1,6 @@
 package com.felipe.arqsoftware.demo.dto;
 
+import com.felipe.arqsoftware.demo.model.Cliente;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ public class ContaCorrenteDto {
     private int agencia;
     private int numeroConta;
 
-    private String titular;
+    private Cliente titular;
     private double saldo;
 
     public ContaCorrenteDto(ContaCorrente conta) {
