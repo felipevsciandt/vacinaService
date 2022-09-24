@@ -34,27 +34,4 @@ public class ContaCorrente {
         this.saldo = saldo;
     }
 
-    public void sacar(Double quantidade) {
-        Double saldoAnterior = this.getSaldo();
-        this.setSaldo(this.getSaldo() - quantidade);
-        gerarExtratoSaque(this, saldoAnterior);
-
-    }
-
-    public void depositar(ContaCorrente contaDeposita, ContaCorrente contaRecebe, Double valor) {
-        contaDeposita.setSaldo(contaDeposita.getSaldo() - valor);
-        contaRecebe.setSaldo(contaRecebe.getSaldo() + valor);
-        gerarExtratoSaque(contaDeposita, contaDeposita.getSaldo() + valor);
-        gerarExtratoDeposito(contaRecebe, valor);
-    }
-
-
-    public Extrato gerarExtratoSaque(ContaCorrente conta, Double saldoAnterior) {
-        return new Extrato(conta, saldoAnterior, conta.getSaldo(), conta.getSaldo() - saldoAnterior);
-    }
-
-    private Extrato gerarExtratoDeposito(ContaCorrente conta, Double valor) {
-        return new Extrato(conta, conta.getSaldo() - valor, valor, conta.getSaldo());
-    }
-
 }

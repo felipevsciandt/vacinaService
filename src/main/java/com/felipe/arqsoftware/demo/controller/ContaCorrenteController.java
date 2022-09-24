@@ -42,8 +42,20 @@ public class ContaCorrenteController {
         return ResponseEntity.created(uri).body(conta);
     }
 
-    @PutMapping ResponseEntity<ContaCorrente> updateAccount(@RequestBody ContaCorrenteDto contaCorrenteDto) {
-        return ResponseEntity.accepted().body(service.updateAccount(contaCorrenteDto));
+//    @PutMapping
+//    public ResponseEntity<ContaCorrente> updateAccount(@RequestBody ContaCorrenteDto contaCorrenteDto) {
+//        return ResponseEntity.accepted().body(service.updateAccount(contaCorrenteDto));
+//    }
+
+    @PutMapping("/{id}/saque/{valor}")
+    public ResponseEntity<ContaCorrente> operacaoSaque(@PathVariable Long id, @PathVariable Double valor) {
+        return ResponseEntity.accepted().body(service.sacar(id, valor));
+    }
+
+    @PutMapping("{id}/deposito/{valor}/{id2}")
+    public ResponseEntity<ContaCorrente> operacaoDeposito(@PathVariable Long id,
+                                                          @PathVariable Double valor, @PathVariable Long id2) {
+        return ResponseEntity.accepted().body(service.depositar(id, valor, id2));
     }
 
     @DeleteMapping("/{id}")

@@ -16,6 +16,9 @@ public class ContaCorrenteService {
     @Autowired
     ContaCorrenteRepository repository;
 
+    @Autowired
+    ExtratoService extratoService;
+
     @Transactional
     public List<ContaCorrente> findAll() {
         return repository.findAll();
@@ -41,6 +44,27 @@ public class ContaCorrenteService {
     public ContaCorrente updateAccount(ContaCorrenteDto contaCorrenteDto) {
         var conta = contaCorrenteDto.convertToContaCorrente();
         return repository.save(conta);
+    }
+
+    public ContaCorrente sacar(Long id ,Double quantidade) {
+        ContaCorrente conta = repository.findById(id).get();
+        Double saldoAnterior = conta.getSaldo();
+        conta.setSaldo(conta.getSaldo() - quantidade);
+        extratoService.gerarExtratoSaque(conta, saldoAnterior);
+
+        return repository.save(conta);
+    }
+
+    @Transactional
+    public ContaCorrente depositar(Long id, Double valor, Long id2) {
+        ContaCorrente contaDeposita = repository.findById(id).get();
+        ContaCorrente contaRecebe = repository.findById(id2).get();
+        contaDeposita.setSaldo(contaDeposita.getSaldo() - valor);
+        contaRecebe.setSaldo(contaRecebe.getSaldo() + valor);
+        extratoService.gerarExtratoSaque(contaDeposita, contaDeposita.getSaldo() + valor);
+        extratoService.gerarExtratoDeposito(contaRecebe, valor);
+
+        return repository.save(contaDeposita);
     }
 
 

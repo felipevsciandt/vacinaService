@@ -1,5 +1,6 @@
 package com.felipe.arqsoftware.demo.service;
 
+import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.model.Extrato;
 import com.felipe.arqsoftware.demo.repository.ExtratoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,15 @@ public class ExtratoService {
 
     public Extrato findById(Long id) {
         return repository.findById(id).get();
+    }
+
+    public Extrato gerarExtratoSaque(ContaCorrente conta, Double saldoAnterior) {
+        Extrato extrato = new Extrato(conta, saldoAnterior, saldoAnterior - conta.getSaldo(), conta.getSaldo());
+        return repository.save(extrato);
+    }
+
+    public Extrato gerarExtratoDeposito(ContaCorrente conta, Double valor) {
+        Extrato extrato = new Extrato(conta, conta.getSaldo() - valor, valor, conta.getSaldo());
+        return repository.save(extrato);
     }
 }
