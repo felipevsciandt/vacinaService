@@ -26,11 +26,11 @@ public class ContaCorrenteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContaCorrenteDto> findById(@PathVariable Long id) {
+    public ResponseEntity<ContaCorrenteDto> findById(@PathVariable Long id) throws AccountNotFoundException {
         try {
             return ResponseEntity.ok().body(service.findById(id));
         } catch (AccountNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new AccountNotFoundException(e.getMessage());
         }
     }
 
