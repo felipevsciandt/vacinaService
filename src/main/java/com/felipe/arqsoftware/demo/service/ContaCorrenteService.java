@@ -3,10 +3,11 @@ package com.felipe.arqsoftware.demo.service;
 import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.repository.ContaCorrenteRepository;
+import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
+import com.felipe.arqsoftware.demo.service.exceptions.AccountNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ContaCorrenteService {
 
     public ContaCorrente sacar(Long id ,Double quantidade) {
         ContaCorrente conta = repository.findById(id).get();
+        validarSaldo(conta, quantidade);
         Double saldoAnterior = conta.getSaldo();
         conta.setSaldo(conta.getSaldo() - quantidade);
         extratoService.gerarExtratoSaque(conta, saldoAnterior);
@@ -55,9 +57,16 @@ public class ContaCorrenteService {
         return repository.save(conta);
     }
 
+    private void validarSaldo(ContaCorrente conta, Double quantidade) {
+        if (quantidade > conta.getSaldo()) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar a operacao");
+        }
+    }
+
     @Transactional
     public ContaCorrente depositar(Long id, Double valor, Long id2) {
         ContaCorrente contaDeposita = repository.findById(id).get();
+        validarSaldo(contaDeposita, valor);
         ContaCorrente contaRecebe = repository.findById(id2).get();
         contaDeposita.setSaldo(contaDeposita.getSaldo() - valor);
         contaRecebe.setSaldo(contaRecebe.getSaldo() + valor);
