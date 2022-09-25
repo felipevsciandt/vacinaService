@@ -3,6 +3,7 @@ package com.felipe.arqsoftware.demo.controller;
 import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.service.ContaCorrenteService;
+import com.felipe.arqsoftware.demo.service.exceptions.ContaNotFoundException;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class ContaCorrenteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContaCorrenteDto> findById(@PathVariable Long id) throws AccountNotFoundException {
+    public ResponseEntity<ContaCorrenteDto> findById(@PathVariable Long id) throws ContaNotFoundException {
         return ResponseEntity.ok().body(service.findById(id));
     }
 
@@ -62,7 +63,7 @@ public class ContaCorrenteController {
 
     @PostMapping("/pagarBoleto/{idConta}/{valorBoleto}")
     public void pagarBoleto(@PathVariable("idConta") Long idConta, @PathVariable("valorBoleto") Double valorBoleto)
-            throws SaldoInsuficienteException, AccountNotFoundException{
+            throws SaldoInsuficienteException, ContaNotFoundException{
         service.pagarBoleto(idConta, valorBoleto);
     }
 }

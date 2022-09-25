@@ -1,9 +1,7 @@
 package com.felipe.arqsoftware.demo.service;
 
 import com.felipe.arqsoftware.demo.model.Cliente;
-import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.repository.ClienteRepository;
-import com.felipe.arqsoftware.demo.service.exceptions.AccountNotFoundException;
 import com.felipe.arqsoftware.demo.service.exceptions.ClientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

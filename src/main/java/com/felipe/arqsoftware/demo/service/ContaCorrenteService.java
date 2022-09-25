@@ -4,7 +4,7 @@ import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.repository.ContaCorrenteRepository;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
-import com.felipe.arqsoftware.demo.service.exceptions.AccountNotFoundException;
+import com.felipe.arqsoftware.demo.service.exceptions.ContaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +26,9 @@ public class ContaCorrenteService {
         return repository.findAll();
     }
     @Transactional
-    public ContaCorrenteDto findById(Long id) throws AccountNotFoundException {
+    public ContaCorrenteDto findById(Long id) throws ContaNotFoundException {
         var conta = repository.findById(id);
-        ContaCorrente account = conta.orElseThrow(() -> new AccountNotFoundException("Operation failed. No account valid for the id on the output."));
+        ContaCorrente account = conta.orElseThrow(() -> new ContaNotFoundException("Operation failed. No account valid for the id on the output."));
         return new ContaCorrenteDto(account);
     }
 
@@ -86,10 +86,10 @@ public class ContaCorrenteService {
         repository.save(conta);
     }
 
-    public void verificarSeContExiste(Long id) throws AccountNotFoundException {
+    public void verificarSeContExiste(Long id) throws ContaNotFoundException {
         Optional<ContaCorrente> contaOptional = repository.findById(id);
         if (!contaOptional.isPresent()) {
-            throw new AccountNotFoundException("Conta nao cadastrada para o id informado");
+            throw new ContaNotFoundException("Conta nao cadastrada para o id informado");
         }
     }
 

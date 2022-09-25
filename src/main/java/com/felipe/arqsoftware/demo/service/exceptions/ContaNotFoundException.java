@@ -1,8 +1,8 @@
 package com.felipe.arqsoftware.demo.service.exceptions;
 
-public class AccountNotFoundException extends RuntimeException {
+public class ContaNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    public AccountNotFoundException(String message) {
+    public ContaNotFoundException(String message) {
         super(message);
     }
 }

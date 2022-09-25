@@ -1,6 +1,6 @@
 package com.felipe.arqsoftware.demo.controller.exception;
 
-import com.felipe.arqsoftware.demo.service.exceptions.AccountNotFoundException;
+import com.felipe.arqsoftware.demo.service.exceptions.ContaNotFoundException;
 import com.felipe.arqsoftware.demo.service.exceptions.ClientNotFoundException;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,8 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    @ExceptionHandler(AccountNotFoundException.class)
-    public ResponseEntity<StandardError> accountNotFoundException(AccountNotFoundException e, HttpServletRequest request){
+    @ExceptionHandler(ContaNotFoundException.class)
+    public ResponseEntity<StandardError> contaNotFoundException(ContaNotFoundException e, HttpServletRequest request){
         HttpStatus status = HttpStatus.NO_CONTENT;
         StandardError err = new StandardError();
         err.setTimestamp(Instant.now());
