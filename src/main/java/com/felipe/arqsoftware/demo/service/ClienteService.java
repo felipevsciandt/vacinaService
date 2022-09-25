@@ -28,7 +28,6 @@ public class ClienteService {
     public Cliente findById(Long id) throws ClientNotFoundException {
         Optional<Cliente> clientObj = repository.findById(id);
         Cliente cliente = clientObj.orElseThrow(() -> new ClientNotFoundException("Operation failed. No account valid for the id on the output."));
-
         return clientObj.get();
     }
 

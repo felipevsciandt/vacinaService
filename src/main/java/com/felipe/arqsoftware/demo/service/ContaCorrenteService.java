@@ -50,6 +50,7 @@ public class ContaCorrenteService {
 
     @Transactional
     public ContaCorrente sacar(Long id ,Double quantidade) {
+        verificarSeContExiste(id);
         ContaCorrente conta = repository.findById(id).get();
         validarSaldo(conta, quantidade);
         Double saldoAnterior = conta.getSaldo();
@@ -61,6 +62,8 @@ public class ContaCorrenteService {
 
     @Transactional
     public ContaCorrente depositar(Long id, Double valor, Long id2) {
+        verificarSeContExiste(id);
+        verificarSeContExiste(id2);
         ContaCorrente contaDeposita = repository.findById(id).get();
         validarSaldo(contaDeposita, valor);
         ContaCorrente contaRecebe = repository.findById(id2).get();
@@ -74,19 +77,20 @@ public class ContaCorrenteService {
 
     @Transactional
     public void pagarBoleto(Long idConta, Double valorBoleto) {
-        Optional<ContaCorrente> optionalConta = repository.findById(idConta);
-        if (!optionalConta.isPresent()) {
-            throw new AccountNotFoundException("Não há conta cadastrada com este Id");
-        }
-        ContaCorrente conta = optionalConta.get();
+        verificarSeContExiste(idConta);
+        ContaCorrente conta = repository.findById(idConta).get();
         Double saldoAnterior = conta.getSaldo() - valorBoleto;
         validarSaldo(conta, valorBoleto);
-        if (conta.getSaldo() < valorBoleto) {
-            throw new SaldoInsuficienteException("Saldo insuficiente");
-        }
         extratoService.gerarExtratoBoleto(conta, saldoAnterior, valorBoleto);
         conta.setSaldo(conta.getSaldo() - valorBoleto);
         repository.save(conta);
+    }
+
+    public void verificarSeContExiste(Long id) throws AccountNotFoundException {
+        Optional<ContaCorrente> contaOptional = repository.findById(id);
+        if (!contaOptional.isPresent()) {
+            throw new AccountNotFoundException("Conta nao cadastrada para o id informado");
+        }
     }
 
     private void validarSaldo(ContaCorrente conta, Double quantidade) throws SaldoInsuficienteException {
