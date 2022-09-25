@@ -48,6 +48,7 @@ public class ContaCorrenteService {
         return repository.save(conta);
     }
 
+    @Transactional
     public ContaCorrente sacar(Long id ,Double quantidade) {
         ContaCorrente conta = repository.findById(id).get();
         validarSaldo(conta, quantidade);
@@ -56,12 +57,6 @@ public class ContaCorrenteService {
         extratoService.gerarExtratoSaque(conta, saldoAnterior);
 
         return repository.save(conta);
-    }
-
-    private void validarSaldo(ContaCorrente conta, Double quantidade) {
-        if (quantidade > conta.getSaldo()) {
-            throw new SaldoInsuficienteException("Saldo insuficiente para realizar a operacao");
-        }
     }
 
     @Transactional
@@ -77,20 +72,26 @@ public class ContaCorrenteService {
         return repository.save(contaDeposita);
     }
 
-
+    @Transactional
     public void pagarBoleto(Long idConta, Double valorBoleto) {
         Optional<ContaCorrente> optionalConta = repository.findById(idConta);
         if (!optionalConta.isPresent()) {
-            //Lancar excessao
+            throw new AccountNotFoundException("Não há conta cadastrada com este Id");
         }
         ContaCorrente conta = optionalConta.get();
         Double saldoAnterior = conta.getSaldo() - valorBoleto;
-        System.out.println("Saldo antes de chamar extrato: " + conta.getSaldo());
+        validarSaldo(conta, valorBoleto);
         if (conta.getSaldo() < valorBoleto) {
             throw new SaldoInsuficienteException("Saldo insuficiente");
         }
         extratoService.gerarExtratoBoleto(conta, saldoAnterior, valorBoleto);
         conta.setSaldo(conta.getSaldo() - valorBoleto);
         repository.save(conta);
+    }
+
+    private void validarSaldo(ContaCorrente conta, Double quantidade) {
+        if (quantidade > conta.getSaldo()) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar a operacao");
+        }
     }
 }

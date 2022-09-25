@@ -1,6 +1,7 @@
 package com.felipe.arqsoftware.demo.controller.exception;
 
 import com.felipe.arqsoftware.demo.service.exceptions.AccountNotFoundException;
+import com.felipe.arqsoftware.demo.service.exceptions.ClientNotFoundException;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,18 @@ public class ControllerExceptionHandler {
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Erro: Id não cadastrado");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<StandardError> clientNotFoundException(ClientNotFoundException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Erro: Cliente não cadastrado com Id informado");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);

@@ -3,6 +3,7 @@ package com.felipe.arqsoftware.demo.controller;
 import com.felipe.arqsoftware.demo.model.Cliente;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.service.ClienteService;
+import com.felipe.arqsoftware.demo.service.exceptions.ClientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> findById(@PathVariable Long id) {
+    public ResponseEntity<Cliente> findById(@PathVariable Long id) throws ClientNotFoundException {
         return ResponseEntity.ok().body(service.findById(id));
     }
 

@@ -3,6 +3,7 @@ package com.felipe.arqsoftware.demo.controller;
 import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.service.ContaCorrenteService;
+import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,13 +45,13 @@ public class ContaCorrenteController {
 //    }
 
     @PutMapping("/{id}/saque/{valor}")
-    public ResponseEntity<ContaCorrente> operacaoSaque(@PathVariable Long id, @PathVariable Double valor) {
+    public ResponseEntity<ContaCorrente> operacaoSaque(@PathVariable Long id, @PathVariable Double valor) throws SaldoInsuficienteException {
         return ResponseEntity.accepted().body(service.sacar(id, valor));
     }
 
     @PutMapping("{id}/deposito/{valor}/{id2}")
     public ResponseEntity<ContaCorrente> operacaoDeposito(@PathVariable Long id,
-                                                          @PathVariable Double valor, @PathVariable Long id2) {
+                                                          @PathVariable Double valor, @PathVariable Long id2) throws SaldoInsuficienteException {
         return ResponseEntity.accepted().body(service.depositar(id, valor, id2));
     }
 
@@ -60,7 +61,8 @@ public class ContaCorrenteController {
     }
 
     @PostMapping("/pagarBoleto/{idConta}/{valorBoleto}")
-    public void pagarBoleto(@PathVariable("idConta") Long idConta, @PathVariable("valorBoleto") Double valorBoleto) {
+    public void pagarBoleto(@PathVariable("idConta") Long idConta, @PathVariable("valorBoleto") Double valorBoleto)
+            throws SaldoInsuficienteException, AccountNotFoundException{
         service.pagarBoleto(idConta, valorBoleto);
     }
 }
