@@ -89,7 +89,7 @@ public class ContaCorrenteService {
         repository.save(conta);
     }
 
-    private void validarSaldo(ContaCorrente conta, Double quantidade) {
+    private void validarSaldo(ContaCorrente conta, Double quantidade) throws SaldoInsuficienteException {
         if (quantidade > conta.getSaldo()) {
             throw new SaldoInsuficienteException("Saldo insuficiente para realizar a operacao");
         }
