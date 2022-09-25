@@ -58,4 +58,9 @@ public class ContaCorrenteController {
     public void deleteAccountById(@PathVariable Long id) {
         service.deleteAccountById(id);
     }
+
+    @PostMapping("/pagarBoleto/{idConta}/{valorBoleto}")
+    public void pagarBoleto(@PathVariable("idConta") Long idConta, @PathVariable("valorBoleto") Double valorBoleto) {
+        service.pagarBoleto(idConta, valorBoleto);
+    }
 }

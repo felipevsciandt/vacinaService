@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContaCorrenteService {
@@ -77,4 +78,15 @@ public class ContaCorrenteService {
     }
 
 
+    public void pagarBoleto(Long idConta, Double valorBoleto) {
+        Optional<ContaCorrente> optionalConta = repository.findById(idConta);
+        if (!optionalConta.isPresent()) {
+            //Lancar excessao
+        }
+        ContaCorrente conta = optionalConta.get();
+        if (conta.getSaldo() < valorBoleto) {
+            throw new SaldoInsuficienteException("Saldo insuficiente");
+        }
+        conta.setSaldo(conta.getSaldo() - valorBoleto);
+    }
 }
