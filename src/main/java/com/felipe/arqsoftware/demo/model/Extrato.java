@@ -31,9 +31,6 @@ public class Extrato {
         this.novoSaldo = novoSaldo;
     }
 
-
-
-
 }
 
 

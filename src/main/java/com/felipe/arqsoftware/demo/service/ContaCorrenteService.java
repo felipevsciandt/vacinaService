@@ -84,9 +84,12 @@ public class ContaCorrenteService {
             //Lancar excessao
         }
         ContaCorrente conta = optionalConta.get();
+        Double saldoAnterior = conta.getSaldo() - valorBoleto;
+        System.out.println("Saldo antes de chamar extrato: " + conta.getSaldo());
         if (conta.getSaldo() < valorBoleto) {
             throw new SaldoInsuficienteException("Saldo insuficiente");
         }
+        extratoService.gerarExtratoBoleto(conta, saldoAnterior, valorBoleto);
         conta.setSaldo(conta.getSaldo() - valorBoleto);
         repository.save(conta);
     }
