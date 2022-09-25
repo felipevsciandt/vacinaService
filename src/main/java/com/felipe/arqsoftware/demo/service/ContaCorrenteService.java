@@ -88,5 +88,6 @@ public class ContaCorrenteService {
             throw new SaldoInsuficienteException("Saldo insuficiente");
         }
         conta.setSaldo(conta.getSaldo() - valorBoleto);
+        repository.save(conta);
     }
 }
