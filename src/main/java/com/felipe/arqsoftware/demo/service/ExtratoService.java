@@ -36,4 +36,9 @@ public class ExtratoService {
         Extrato extrato = new Extrato(conta, saldoAnterior + valorDoBoleto, valorDoBoleto, saldoAnterior);
         return repository.save(extrato);
     }
+
+    public Extrato gerarExtratoDepositar(ContaCorrente conta, Double saldoAnterior, Double valor) {
+        Extrato extrato = new Extrato(conta, saldoAnterior, valor, saldoAnterior + valor);
+        return repository.save(extrato);
+    }
 }

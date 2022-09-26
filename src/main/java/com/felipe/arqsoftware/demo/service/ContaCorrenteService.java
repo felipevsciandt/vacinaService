@@ -1,8 +1,11 @@
 package com.felipe.arqsoftware.demo.service;
 
 import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
+import com.felipe.arqsoftware.demo.model.Cliente;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
+import com.felipe.arqsoftware.demo.repository.ClienteRepository;
 import com.felipe.arqsoftware.demo.repository.ContaCorrenteRepository;
+import com.felipe.arqsoftware.demo.service.exceptions.DeleteFailureException;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import com.felipe.arqsoftware.demo.service.exceptions.ContaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ public class ContaCorrenteService {
 
     @Autowired
     ContaCorrenteRepository repository;
+    @Autowired
+    ClienteService clienteService;
 
     @Autowired
     ExtratoService extratoService;
@@ -34,19 +39,21 @@ public class ContaCorrenteService {
 
     @Transactional
     public ContaCorrente createAccount(ContaCorrente contaCorrente) {
+        Cliente cliente = clienteService.findById(contaCorrente.getCliente().getId());
+        contaCorrente.setCliente(cliente);
         return repository.save(contaCorrente);
     }
 
     @Transactional
     public void deleteAccountById(Long id) {
+        verificarSeContExiste(id);
+        var conta = repository.findById(id).get();
+        if (conta.getSaldo() > 0) {
+            throw new DeleteFailureException("Para encerrar a conta. Deve-se sacar todo o saldo");
+        }
         repository.deleteById(id);
     }
 
-    @Transactional
-    public ContaCorrente updateAccount(ContaCorrenteDto contaCorrenteDto) {
-        var conta = contaCorrenteDto.convertToContaCorrente();
-        return repository.save(conta);
-    }
 
     @Transactional
     public ContaCorrente sacar(Long id ,Double quantidade) {
@@ -61,7 +68,7 @@ public class ContaCorrenteService {
     }
 
     @Transactional
-    public ContaCorrente depositar(Long id, Double valor, Long id2) {
+    public ContaCorrente transferir(Long id, Double valor, Long id2) {
         verificarSeContExiste(id);
         verificarSeContExiste(id2);
         ContaCorrente contaDeposita = repository.findById(id).get();
@@ -97,5 +104,15 @@ public class ContaCorrenteService {
         if (quantidade > conta.getSaldo()) {
             throw new SaldoInsuficienteException("Saldo insuficiente para realizar a operacao");
         }
+    }
+
+    public ContaCorrente deposito(Long id, Double valor) {
+        var opt = repository.findById(id);
+        verificarSeContExiste(id);
+        ContaCorrente conta = opt.get();
+        Double saldoAnterior = conta.getSaldo();
+        conta.setSaldo(conta.getSaldo() + valor);
+        extratoService.gerarExtratoDepositar(conta, saldoAnterior, valor);
+        return conta;
     }
 }

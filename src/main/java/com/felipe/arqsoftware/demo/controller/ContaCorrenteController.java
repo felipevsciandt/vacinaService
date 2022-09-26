@@ -4,6 +4,7 @@ import com.felipe.arqsoftware.demo.dto.ContaCorrenteDto;
 import com.felipe.arqsoftware.demo.model.ContaCorrente;
 import com.felipe.arqsoftware.demo.service.ContaCorrenteService;
 import com.felipe.arqsoftware.demo.service.exceptions.ContaNotFoundException;
+import com.felipe.arqsoftware.demo.service.exceptions.DeleteFailureException;
 import com.felipe.arqsoftware.demo.service.exceptions.SaldoInsuficienteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +51,19 @@ public class ContaCorrenteController {
         return ResponseEntity.accepted().body(service.sacar(id, valor));
     }
 
-    @PutMapping("{id}/deposito/{valor}/{id2}")
-    public ResponseEntity<ContaCorrente> operacaoDeposito(@PathVariable Long id,
+    @PutMapping("{id}/transferir/{valor}/{id2}")
+    public ResponseEntity<ContaCorrente> operacaoTransferencia(@PathVariable Long id,
                                                           @PathVariable Double valor, @PathVariable Long id2) throws SaldoInsuficienteException {
-        return ResponseEntity.accepted().body(service.depositar(id, valor, id2));
+        return ResponseEntity.accepted().body(service.transferir(id, valor, id2));
+    }
+
+    @PutMapping("{id}/depositar/{valor}")
+    public ResponseEntity<ContaCorrente> operacaoDepositar(@PathVariable Long id, @PathVariable Double valor) {
+        return ResponseEntity.accepted().body(service.deposito(id, valor));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAccountById(@PathVariable Long id) {
+    public void deleteAccountById(@PathVariable Long id) throws DeleteFailureException {
         service.deleteAccountById(id);
     }
 
